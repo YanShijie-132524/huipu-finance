@@ -1,10 +1,15 @@
 package com.qst.finance.controller.user;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.qst.finance.common.R;
-import com.qst.finance.controller.user.dto.request.LoginParam;
+import com.qst.finance.controller.user.dto.request.LoginParamDto;
+import com.qst.finance.controller.user.dto.request.UserPageQueryDTO;
 import com.qst.finance.controller.user.dto.response.LoginDto;
-import com.qst.finance.service.user.UserService;
+import com.qst.finance.controller.user.vo.UserInfoVO;
+import com.qst.finance.controller.user.vo.UserListItemVO;
+import com.qst.finance.service.user.SysUserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -16,15 +21,25 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
-    private final UserService userService;
+    private final SysUserService sysUserService;
 
     @PostMapping("/login")
-    public R<LoginDto> login(@RequestBody LoginParam loginParam) {
-        R<LoginDto> success = R.success(userService.login(loginParam));
-        System.out.println("Hello,World");
-        return success;
+    public R<LoginDto> login(@RequestBody LoginParamDto loginParamDto) {
+        log.error(loginParamDto.toString());
+        return R.success(sysUserService.login(loginParamDto));
+    }
+
+    @GetMapping("/info")
+    public R<UserInfoVO> info() {
+        return R.success(sysUserService.getUserInfo());
+    }
+
+    @GetMapping("/list")
+    public R<Page<UserListItemVO>> list(UserPageQueryDTO dto) {
+        return R.success(sysUserService.page(dto));
     }
 
 }

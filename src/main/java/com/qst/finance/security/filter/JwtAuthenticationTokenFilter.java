@@ -4,7 +4,7 @@ import com.qst.finance.common.HttpStatusEnum;
 import com.qst.finance.entity.SysUser;
 import com.qst.finance.security.jwt.JwtUtil;
 import com.qst.finance.security.model.LoginUser;
-import com.qst.finance.service.user.UserService;
+import com.qst.finance.service.user.SysUserService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -27,7 +27,7 @@ import java.util.Objects;
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final UserService userService;
+    private final SysUserService sysUserService;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -39,6 +39,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+
 
         try {
             // 1) 解析 claims
@@ -61,7 +62,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 }
 
                 // 3) 查库拿最新用户（确保锁定、禁用等状态即时生效）
-                SysUser user = userService.getById(userId);
+                SysUser user = sysUserService.getById(userId);
                 if (Objects.isNull(user)) {
                     throw new RuntimeException("用户不存在或已被删除");
                 }
