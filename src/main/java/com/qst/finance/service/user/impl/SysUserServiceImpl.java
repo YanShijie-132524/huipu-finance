@@ -111,50 +111,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public Page<UserListItemVO> page(UserPageQueryDTO dto) {
-//        // 直接用前端的 current/size
-//        Page<SysUser> page = new Page<>(dto.getCurrent(), dto.getSize());
-//
-//        LambdaQueryWrapper<SysUser> qw = Wrappers.lambdaQuery(SysUser.class)
-//                .and(StringUtils.hasText(dto.getKeyword()), w -> w
-//                        .like(SysUser::getUserName, dto.getKeyword())
-//                        .or().like(SysUser::getNickName, dto.getKeyword()))
-//                .orderByDesc(SysUser::getCreateTime);
-//
-//        IPage<SysUser> p = sysUserMapper.selectPage(page, qw);
-//
-//        // 映射到 VO，并塞回 Page<UserListItemVO>
-//        Page<UserListItemVO> voPage = new Page<>(p.getCurrent(), p.getSize(), p.getTotal());
-//        List<UserListItemVO> records = p.getRecords().stream().map(this::toListItem).toList();
-//        voPage.setRecords(records);
-        return null;
-    }
-
-    private UserListItemVO toListItem(SysUser u){
-        UserListItemVO vo = new UserListItemVO();
-        vo.setId(u.getUserId());
-        vo.setAvatar(u.getAvatar());
-        vo.setCreateBy(u.getCreateBy());
-        vo.setCreateTime(u.getCreateTime());
-        vo.setUpdateBy(u.getUpdateBy());
-        vo.setUpdateTime(u.getUpdateTime());
-        vo.setStatus(mapStatus(u.getStatus(), u.getDelFlag())); // 1|2|3|4
-        vo.setUserName(u.getUserName());
-        vo.setUserGender(u.getSex());
-        vo.setNickName(u.getNickName());
-        vo.setUserPhone(u.getPhonenumber());
-        vo.setUserEmail(u.getEmail());
-
-        // 如果列表里也要显示该用户角色，可选：查询一次（注意 N+1，可批量优化）
-        // vo.setUserRoles(roleMapper.selectRoleKeysByUserId(u.getUserId()));
-        vo.setUserRoles(Collections.emptyList());
-        return vo;
-    }
-
-    private String mapStatus(String status, String delFlag){
-        if ("2".equals(delFlag)) return "4"; // 注销
-        if ("0".equals(status)) return "1";  // 在线（示例）
-        if ("1".equals(status)) return "2";  // 离线（示例）
-        return "3";                          // 异常（兜底）
+        return sysUserMapper.selectUserPage(dto);
     }
 
 }

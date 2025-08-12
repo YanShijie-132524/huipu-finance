@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qst.finance.mapper.SysUserMapper">
+
+    <!-- 映射：基础字段 + 角色名列表（通过第二个select按user_id加载） -->
+    <resultMap id="UserListItemMap" type="com.qst.finance.controller.user.vo.UserListItemVO">
+        <id     column="user_id"    property="id"/>
+        <result column="avatar"     property="avatar"/>
+        <result column="create_by"  property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by"  property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status"     property="status"/>
+        <result column="user_name"  property="userName"/>
+        <result column="sex"        property="userGender"/>
+        <result column="nick_name"  property="nickName"/>
+        <result column="phonenumber" property="userPhone"/>
+        <result column="email"      property="userEmail"/>
+
+        <!-- 关键：按 user_id 调用第二个 select，返回 List<String> -->
+        <collection property="userRoles"
+                    ofType="java.lang.String"
+                    column="user_id"
+                    select="selectRoleNamesByUserId"/>
+    </resultMap>
+
+    <!-- 分页查询：只查用户基础信息 -->
+    <select id="selectUserPage" resultMap="UserListItemMap">
+        SELECT
+        u.user_id,
+        u.avatar,
+        u.create_by,
+        u.create_time,
+        u.update_by,
+        u.update_time,
+        u.status,
+        u.user_name,
+        u.sex,
+        u.nick_name,
+        u.phonenumber,
+        u.email
+        FROM sys_user u
+        <where>
+            u.del_flag = '0'
+
+            <if test="dto.name != null and dto.name != ''">
+                AND (u.user_name LIKE CONCAT('%', #{dto.name}, '%')
+                OR  u.nick_name LIKE CONCAT('%', #{dto.name}, '%'))
+            </if>
+
+            <if test="dto.phone != null and dto.phone != ''">
+                AND u.phonenumber LIKE CONCAT('%', #{dto.phone}, '%')
+            </if>
+
+            <if test="dto.email != null and dto.email != ''">
+                AND u.email LIKE CONCAT('%', #{dto.email}, '%')
+            </if>
+
+            <!-- address 这里示例用 login_ip；若有地址字段请替换 -->
+            <if test="dto.address != null and dto.address != ''">
+                AND u.login_ip LIKE CONCAT('%', #{dto.address}, '%')
+            </if>
+
+            <if test="dto.status != null and dto.status != ''">
+                AND u.status = #{dto.status}
+            </if>
+
+            <!-- 单日：覆盖整天 -->
+            <if test="dto.date != null">
+                AND u.create_time &gt;= #{dto.date}
+                AND u.create_time &lt; DATE_ADD(#{dto.date}, INTERVAL 1 DAY)
+            </if>
+
+            <!-- 日期范围：start ~ end（含end整日） -->
+            <if test="dto.daterange != null and dto.daterange.length == 2">
+                AND u.create_time &gt;= #{dto.daterange[0]}
+                AND u.create_time &lt;  DATE_ADD(#{dto.daterange[1]}, INTERVAL 1 DAY)
+            </if>
+        </where>
+        ORDER BY u.create_time DESC
+    </select>
+
+    <!-- 第二个 select：按 user_id 查角色名列表（逻辑未删除） -->
+    <select id="selectRoleNamesByUserId" resultType="java.lang.String">
+        SELECT DISTINCT r.role_name
+        FROM sys_user_role ur
+                 JOIN sys_role r ON r.role_id = ur.role_id
+        WHERE ur.user_id = #{user_id}
+          AND r.del_flag = '0'
+    </select>
+
+</mapper>
