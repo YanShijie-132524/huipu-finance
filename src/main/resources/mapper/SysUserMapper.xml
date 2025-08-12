@@ -79,7 +79,7 @@
                 AND u.create_time &lt;  DATE_ADD(#{dto.daterange[1]}, INTERVAL 1 DAY)
             </if>
         </where>
-        ORDER BY u.create_time DESC
+        ORDER BY u.create_time ASC
     </select>
 
     <!-- 第二个 select：按 user_id 查角色名列表（逻辑未删除） -->

@@ -7,4 +7,5 @@ package com.qst.finance.controller.user.dto.request;
  * @Created by YanShijie
  */
 public record LoginParamDto(String username, String password) {
+
 }

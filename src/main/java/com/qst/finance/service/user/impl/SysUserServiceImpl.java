@@ -107,7 +107,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public Page<UserListItemVO> page(UserPageQueryDTO dto) {
-        return sysUserMapper.selectUserPage(dto);
+        return sysUserMapper.selectUserPage(new Page<>(dto.getCurrent(), dto.getSize()), dto);
     }
 
 }
