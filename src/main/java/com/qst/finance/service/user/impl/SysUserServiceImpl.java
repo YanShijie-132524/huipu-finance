@@ -111,22 +111,22 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public Page<UserListItemVO> page(UserPageQueryDTO dto) {
-        // 直接用前端的 current/size
-        Page<SysUser> page = new Page<>(dto.getCurrent(), dto.getSize());
-
-        LambdaQueryWrapper<SysUser> qw = Wrappers.lambdaQuery(SysUser.class)
-                .and(StringUtils.hasText(dto.getKeyword()), w -> w
-                        .like(SysUser::getUserName, dto.getKeyword())
-                        .or().like(SysUser::getNickName, dto.getKeyword()))
-                .orderByDesc(SysUser::getCreateTime);
-
-        IPage<SysUser> p = sysUserMapper.selectPage(page, qw);
-
-        // 映射到 VO，并塞回 Page<UserListItemVO>
-        Page<UserListItemVO> voPage = new Page<>(p.getCurrent(), p.getSize(), p.getTotal());
-        List<UserListItemVO> records = p.getRecords().stream().map(this::toListItem).toList();
-        voPage.setRecords(records);
-        return voPage;
+//        // 直接用前端的 current/size
+//        Page<SysUser> page = new Page<>(dto.getCurrent(), dto.getSize());
+//
+//        LambdaQueryWrapper<SysUser> qw = Wrappers.lambdaQuery(SysUser.class)
+//                .and(StringUtils.hasText(dto.getKeyword()), w -> w
+//                        .like(SysUser::getUserName, dto.getKeyword())
+//                        .or().like(SysUser::getNickName, dto.getKeyword()))
+//                .orderByDesc(SysUser::getCreateTime);
+//
+//        IPage<SysUser> p = sysUserMapper.selectPage(page, qw);
+//
+//        // 映射到 VO，并塞回 Page<UserListItemVO>
+//        Page<UserListItemVO> voPage = new Page<>(p.getCurrent(), p.getSize(), p.getTotal());
+//        List<UserListItemVO> records = p.getRecords().stream().map(this::toListItem).toList();
+//        voPage.setRecords(records);
+        return null;
     }
 
     private UserListItemVO toListItem(SysUser u){

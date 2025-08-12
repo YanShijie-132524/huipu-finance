@@ -1,9 +1,6 @@
 package com.qst.finance.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.io.Serial;
@@ -42,6 +39,7 @@ public class SysRole implements Serializable {
     private String status;
 
     @TableField("del_flag")
+    @TableLogic(value = "0", delval = "1")
     private String delFlag;
 
     @TableField("create_by")

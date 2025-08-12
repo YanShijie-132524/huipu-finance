@@ -8,6 +8,5 @@ public class UserPageQueryDTO {
 
     private Integer size;
 
-
     private String status;
 }
