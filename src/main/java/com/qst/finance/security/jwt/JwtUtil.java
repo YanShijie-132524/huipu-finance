@@ -26,7 +26,7 @@ public final class JwtUtil {
     private String secret;
 
     // 默认有效期
-    private Duration expire = Duration.ofDays(30);
+    private Duration expire = Duration.ofHours(1);
 
     // 默认头与方案（向后兼容）
     private String header = "Authorization";

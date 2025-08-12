@@ -22,6 +22,6 @@ public interface SysUserService extends IService<SysUser> {
 
     UserInfoVO getUserInfo();
 
-    Page<UserListItemVO> page(UserPageQueryDTO dto);
+    Page<UserListItemVO> page(UserPageQueryDTO dto); // 直接返回 Page
 
 }
